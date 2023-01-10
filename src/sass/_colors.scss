@@ -146,9 +146,9 @@ $dark_sidebar_bg: white;
 
 @if $trans=='true' and $variant=='dark' {
   @if $colorscheme == 'nord' {
-    $dark_sidebar_bg:               rgba(if($darker == 'true', #22262e, #2b303b), 0.96);
+    $dark_sidebar_bg:               rgba(if($darker == 'true', #22262e, #2b303b), 0.65); // FROSTED GLASS EFFECT HERE
   } @else {
-    $dark_sidebar_bg:               rgba(if($darker == 'true', #282828, #333333), 0.96);
+    $dark_sidebar_bg:               rgba(if($darker == 'true', #282828, #333333), 0.65); // FROSTED GLASS EFFECT HERE
   }
 }
 
