@@ -7,11 +7,14 @@
 
 @namespace xul "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 
-#nav-bar, #PersonalToolbar, #toolbar-menubar, #TabsToolbar {
-	border: 0 !important;
+#nav-bar, #PersonalToolbar, #toolbar-menubar, #TabsToolbar, #titlebar {
+	border: none !important;
 	color: var(--gnome-toolbar-color);
 	background: var(--gnome-toolbar-background) !important;
-	border-bottom: none !important;
+}
+
+#TabsToolbar {
+	border-bottom: 1px solid var(--gnome-toolbar-border-color) !important;
 }
 
 findbar {
@@ -78,14 +81,15 @@ findbar:-moz-window-inactive {
 }
 
 #PersonalToolbar {
-	padding: 0 4px !important;
+	padding: 0 3px 3px !important;
 	height: 32px !important;
+	max-height: 32px !important;
 }
 
 /* bookmark-item */
 toolbarbutton.bookmark-item {
-	padding: 0 4px; !important;
+	padding: 3px 6px !important;
 	margin: 0 2px !important;
 	border-radius: 3px !important;
-	max-height: 20px !important;
+	max-height: 24px !important;
 }

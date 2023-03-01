@@ -18,13 +18,8 @@ tab > stack {
 	background-image: none !important;
 }
 
-.tabbrowser-tab:not([pinned]) {
-	margin: 2px 0 0 !important;
-}
-
-.tabbrowser-tab[pinned] {
-	margin-top: 2px !important;
-	margin-bottom: 0 !important;
+.tabbrowser-tab {
+	margin: 1px 0 0 0 !important;
 }
 
 .tabbrowser-tab:not([visuallyselected="true"], [multiselected]), .tabbrowser-tab:-moz-lwtheme {
@@ -127,32 +122,37 @@ tab > stack {
 }
 
 #TabsToolbar #alltabs-button {
-	padding: 0 0 !important;
+	padding: 0 !important;
 	visibility: collapse !important;
 }
 
 #TabsToolbar .toolbarbutton-1,
-#tabs-newtab-button, #TabsToolbar #new-tab-button {
-	margin: 2px 2px 0 !important;
+#TabsToolbar #tabs-newtab-button,
+#TabsToolbar #new-tab-button {
+	margin: 1px 2px 0 !important;
 	padding: 0 10px !important;
 	max-height: 32px !important;
 	min-height: 32px !important;
+	border-radius: 8px !important;
 }
 
 #TabsToolbar .toolbarbutton-1 image,
-#tabs-newtab-button image, #TabsToolbar #new-tab-button image {
+#TabsToolbar #tabs-newtab-button image,
+#TabsToolbar #new-tab-button image {
 	margin: 0 !important;
 	padding: 0 !important;
 	height: 16px !important;
 	width: 16px !important;
 }
 
-#TabsToolbar #scrollbutton-up, #TabsToolbar #scrollbutton-down {
+#TabsToolbar #scrollbutton-up,
+#TabsToolbar #scrollbutton-down {
 	max-height: 32px !important;
 	min-height: 32px !important;
 }
 
-#TabsToolbar #scrollbutton-up image, #TabsToolbar #scrollbutton-down image {
+#TabsToolbar #scrollbutton-up image,
+#TabsToolbar #scrollbutton-down image {
 	margin: 0 !important;
 	padding: 0 !important;
 	height: 16px !important;

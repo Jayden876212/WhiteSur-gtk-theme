@@ -1451,37 +1451,35 @@ actionbar {
 
 // Headerbar Buttons
 %headerbar_buttons {
-  &:not(.flat) {
-    @include button(header-normal);
+  @include button(header-normal);
 
-    &:backdrop { opacity: 0.65; background-image: none; }
+  &:backdrop { opacity: 0.65; background-image: none; }
 
-    &:hover {
-      @include button(header-hover);
-      transition: $button_transition;
-    }
+  &:hover {
+    @include button(header-hover);
+    transition: $button_transition;
+  }
 
-    &:active {
-      @include button(header-active);
-      transition: $button_transition;
-      transition-duration: 300ms;
-    }
+  &:active {
+    @include button(header-active);
+    transition: $button_transition;
+    transition-duration: 300ms;
+  }
 
-    &:checked {
-      @include button(header-checked);
-      transition: $button_transition;
-      transition-duration: 300ms;
+  &:checked {
+    @include button(header-checked);
+    transition: $button_transition;
+    transition-duration: 300ms;
 
-      &:hover { background-image: none; }
-
-      &:disabled {
-        @include button(header-insensitive-active);
-      }
-    }
+    &:hover { background-image: none; }
 
     &:disabled {
-      @include button(header-insensitive);
+      @include button(header-insensitive-active);
     }
+  }
+
+  &:disabled {
+    @include button(header-insensitive);
   }
 }
 
@@ -1496,7 +1494,7 @@ headerbar {
     transition: $backdrop_transition;
     color: transparentize($header_fg, 0.3);
     background-color: $header_bg_backdrop;
-    border-color: if($variant=='light', lighten($header_border, 5%), darken($header_border, 3%));
+    border-bottom: 1px solid if($variant=='light', lighten($header_border, 5%), darken($header_border, 3%));
   }
 
   .title {
@@ -1565,10 +1563,6 @@ headerbar {
     @include button(header-normal);
 
     &:backdrop { opacity: 0.65; background-image: none; }
-
-    &.flat {
-      @include button(undecorated);
-    }
 
     &:disabled {
       @include button(header-insensitive);
@@ -1763,17 +1757,6 @@ headerbar {
   .maximized &, .maximized &:backdrop {
     border-radius: $maximized_radius $maximized_radius 0 0; // squared corners when the window is max'd or tiled
     box-shadow: none;
-  }
-
-  .maximized & {
-    background-color: $header_bg;
-    border-color: opacify($header_border, 1);
-    box-shadow: none;
-
-    &:backdrop {
-      background-color: $header_bg_backdrop;
-      border-color: if($variant=='light', lighten($header_border, 15%), darken($header_border, 3%));
-    }
   }
 
   &.default-decoration {
@@ -2211,10 +2194,10 @@ menu {
   border: none;
   color: $fg_color;
 
+  @if $variant == 'dark' { box-shadow: inset 0 0 0 1px $highlight_color; }
+
   .csd & {
     background-color: $menu_bg;
-    @if $variant == 'light' { border: none; }
-    @if $variant == 'dark' { border: 1px solid lighten($menu_bg, 6%); }
   }
 
   separator {
@@ -2229,7 +2212,7 @@ menu {
     min-height: 12px;
     min-width: 40px;
     padding: $container_padding / 2 $container_padding;
-    border-radius: $mn_radius - 3px;
+    border-radius: $bt_radius;
     text-shadow: none;
     color: $fg_color;
     // -gtk-icon-style: symbolic;
