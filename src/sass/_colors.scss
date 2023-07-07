@@ -26,6 +26,11 @@ $hint_fg_color:                     if($variant == 'light', #565656, #999999);
   $hint_fg_color:                   if($variant == 'light', #495265, #8994a9);
 }
 
+//insensitive state derived colors
+$disabled_fg_color:                 if($variant == 'light', transparentize($fg_color, 0.55), transparentize($fg_color, 0.65));
+$alt_disabled_fg_color:             if($variant == 'light', transparentize($alt_fg_color, 0.55), transparentize($alt_fg_color, 0.65));
+$disabled_bg_color:                 if($variant == 'light', mix($bg_color, $base_color, 40%), lighten($bg_color, 2%));
+
 $track_color:                       if($variant == 'light', rgba(black, 0.20), rgba(white, 0.16));
 $visit_color:                       if($variant == 'light', rgba(black, 0.16), rgba(white, 0.12));
 $divider_color:                     if($variant == 'light', rgba(black, 0.12), rgba(white, 0.1));
@@ -113,11 +118,6 @@ $suggested_color:                   if($colorscheme == 'nord', $nord_color_blue,
 $progress_color:                    $selected_bg_color;
 $drop_target_color:                 if($colorscheme == 'nord', $nord_color_orange, $theme_color_orange);
 
-//insensitive state derived colors
-$disabled_fg_color:                 if($variant == 'light', transparentize($fg_color, 0.55), transparentize($fg_color, 0.65));
-$alt_disabled_fg_color:             if($variant == 'light', transparentize($alt_fg_color, 0.55), transparentize($alt_fg_color, 0.65));
-$disabled_bg_color:                 if($variant == 'light', mix($bg_color, $base_color, 40%), lighten($bg_color, 2%));
-
 // Headerbar colors
 $header_bg:                         if($variant == 'light', #ffffff, if($darker == 'true', #1e1e1e, #373737));
 $header_highlight:                  if($variant == 'dark', if($darker == 'true', #242424, #434343), #f5f5f5); // For metacity
@@ -180,7 +180,7 @@ $osd_borders_color:                 $dark_borders_color;
 
 // Menu colors
 $menu_bg:                           if($variant == 'light', $base_color, $bg_color);
-$menu_bd:                           if($variant == 'light', rgba(black, 0.1), rgba(white, 0.1));
+$menu_bd:                           if($variant == 'light', rgba(black, 0.08), rgba(white, 0.07));
 
 @if $trans == 'true' {
   $menu_bg:                         if($variant == 'light', rgba($base_color, 0.95), rgba($bg_color, 0.95));
@@ -271,6 +271,7 @@ $button_borders:                    if($variant == 'light', $button_border, $dar
 $wm_outline_light:                  0 0 0 2px rgba(black, 0.03), 0 0 0 1px rgba(black, 0.12);
 $wm_outline_dark:                   0 0 0 2px rgba(black, 0.1), 0 0 0 1px rgba(black, 0.75);
 $wm_shadow:                         if($variant=='light', rgba(black, 0.15), rgba(black, 0.35));
+$wm_shadow_backdrop:                if($variant=='light', rgba(black, 0.08), rgba(black, 0.15));
 $wm_outline:                        if($variant=='light', $wm_outline_light, $wm_outline_dark);
 
 // WM Buttons

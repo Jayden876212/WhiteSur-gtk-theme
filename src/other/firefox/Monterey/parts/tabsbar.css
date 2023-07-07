@@ -58,6 +58,23 @@ tab > stack {
 	background: var(--gnome-inactive-tabbar-tab-active-background) !important;
 }
 
+/* Tab labels */
+tab .tab-label {
+	color: var(--gnome-tabbar-tab-color) !important;
+}
+tab:hover .tab-label {
+	color: var(--gnome-tabbar-tab-hover-color) !important;
+}
+tab[selected] .tab-label {
+	color: var(--gnome-tabbar-tab-active-color) !important;
+}
+tab:-moz-window-inactive .tab-label {
+	color: var(--gnome-inactive-tabbar-tab-color) !important;
+}
+tab[selected]:-moz-window-inactive .tab-label {
+	color: var(--gnome-inactive-tabbar-tab-active-color) !important;
+}
+
 .close-icon {
 	height: 16px !important;
 	padding: 0 !important;
@@ -112,9 +129,47 @@ tab > stack {
 	margin-top: 0 !important;
 }
 
+.tabbrowser-tab[soundplaying="true"] .tab-icon-image,
+.tabbrowser-tab[muted="true"] .tab-icon-image {
+	margin-top: 3px !important;
+	margin-left: 2px !important;
+}
+
+.tab-icon-overlay {
+	height: 24px !important;
+	width: 24px !important;
+	padding: 4px !important;
+	border-radius: 100px !important;
+}
+
+.tab-icon-overlay:not([crashed]):is([pinned], [sharing]) {
+	top: 0 !important;
+	inset-inline-end: 0 !important;
+}
+
+.tabbrowser-tab .tab-icon-overlay:not([crashed]):is([pinned], [sharing]) {
+	background-color: var(--gnome-tabbar-tab-background) !important;
+}
+
+.tabbrowser-tab[selected=true] .tab-icon-overlay:not([crashed]):is([pinned], [sharing]) {
+	background-color: var(--gnome-tabbar-tab-active-background) !important;
+}
+
+.tabbrowser-tab .tab-icon-overlay:not([crashed]):is([pinned], [sharing]):hover {
+	background-color: var(--gnome-tabbar-tab-hover-background) !important;
+}
+
 /* Remove blue line above tabs */
 .tab-line {
 	display: none;
+}
+
+/* Tab attention dot */
+.tabbrowser-tab:is([image], [pinned]) > .tab-stack > .tab-content[attention]:not([selected="true"]), .tabbrowser-tab > .tab-stack > .tab-content[pinned][titlechanged]:not([selected="true"]), #firefox-view-button[attention] {
+	background-image: radial-gradient(circle, var(--gnome-tab-attention-icon-color), var(--gnome-tab-attention-icon-color) 2px, transparent 2px) !important;
+	background-position: center bottom 3px !important;
+	background-size: 4px 4px;
+	background-repeat: no-repeat;
 }
 
 .tabbrowser-tab[class*="identity-color-"][pinned] {

@@ -48,7 +48,7 @@ findbar:-moz-window-inactive,
 }
 
 #TabsToolbar {
-	margin-top: -42px !important;
+	margin-top: -41px !important;
 	padding: 0 !important;
 	margin-bottom: 6px !important;
 	background: none !important;
@@ -71,24 +71,48 @@ findbar:-moz-window-inactive,
 
 #navigator-toolbox #nav-bar, findbar {
 	-moz-box-ordinal-group: 0;
+	order: 0;
 }
 #navigator-toolbox #PersonalToolbar {
 	-moz-box-ordinal-group: 10;
+	order: 10;
 }
 #navigator-toolbox #titlebar {
 	-moz-box-ordinal-group: 1;
+	order: 1;
 }
 #navigator-toolbox toolbar {
 	-moz-box-ordinal-group: 3;
+	order: 3;
 }
 #navigator-toolbox #TabsToolbar {
 	-moz-box-ordinal-group: 2;
+	order: 2;
 }
 
 #PersonalToolbar {
 	padding: 0 3px 3px !important;
 	height: 32px !important;
 	max-height: 32px !important;
+}
+
+/* Sidebar */
+#sidebar-box,
+.sidebar-panel[lwt-sidebar] {
+	color: var(--gnome-toolbar-color) !important;
+	background: var(--gnome-toolbar-background) !important;
+}
+
+/* Customization page */
+#customization-container:-moz-lwtheme {
+	background-image: linear-gradient(var(--gnome-browser-before-load-background), var(--gnome-browser-before-load-background)) !important;
+}
+
+#customization-footer {
+	border-top: 1px solid var(--gnome-toolbar-border-color) !important;
+	color: var(--gnome-toolbar-color) !important;
+	background: var(--gnome-toolbar-background) !important;
+	border-radius: 0 0 12px 12px !important;
 }
 
 /* bookmark-item */

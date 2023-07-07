@@ -26,7 +26,9 @@ MY_HOME=$(getent passwd "${MY_USERNAME}" | cut -d: -f6)
 
 if command -v gnome-shell &> /dev/null; then
   SHELL_VERSION="$(gnome-shell --version | cut -d ' ' -f 3 | cut -d . -f -1)"
-  if [[ "${SHELL_VERSION:-}" -ge "42" ]]; then
+  if [[ "${SHELL_VERSION:-}" -ge "44" ]]; then
+    GNOME_VERSION="44-0"
+  elif [[ "${SHELL_VERSION:-}" -ge "42" ]]; then
     GNOME_VERSION="42-0"
   elif [[ "${SHELL_VERSION:-}" -ge "40" ]]; then
     GNOME_VERSION="40-0"
@@ -88,7 +90,7 @@ COLOR_VARIANTS=('Light' 'Dark')
 OPACITY_VARIANTS=('normal' 'solid')
 ALT_VARIANTS=('normal' 'alt')
 THEME_VARIANTS=('default' 'blue' 'purple' 'pink' 'red' 'orange' 'yellow' 'green' 'grey')
-ICON_VARIANTS=('standard' 'simple' 'gnome' 'ubuntu' 'tux' 'arch' 'manjaro' 'fedora' 'debian' 'void' 'opensuse' 'popos' 'mxlinux' 'zorin')
+ICON_VARIANTS=('standard' 'simple' 'gnome' 'ubuntu' 'tux' 'arch' 'manjaro' 'fedora' 'debian' 'void' 'opensuse' 'popos' 'mxlinux' 'zorin' 'budgie' 'gentoo')
 SIDEBAR_SIZE_VARIANTS=('default' '180' '220' '240' '260' '280')
 PANEL_OPACITY_VARIANTS=('default' '30' '45' '60' '75')
 PANEL_SIZE_VARIANTS=('default' 'smaller' 'bigger')
@@ -636,6 +638,17 @@ restore_file() {
 }
 
 backup_file() {
+  if [[ -f "${1}.bak" || -d "${1}.bak" ]]; then
+    case "${2}" in
+      sudo)
+        sudo rm -rf "${1}" ;;
+      udo)
+        udo rm -rf "${1}" ;;
+      *)
+        rm -rf "${1}" ;;
+    esac
+  fi
+
   if [[ -f "${1}" || -d "${1}" ]]; then
     case "${2}" in
       sudo)
@@ -669,7 +682,7 @@ remind_relative_path() {
 sudo() {
   local result="0"
 
-  prompt -w "Executing '$(echo "${@}" | cut -c -35 )...' as root"
+  prompt -w "Executing '$(echo "${@}" | cut -c -35 )...' as root \n"
 
   if ! ${SUDO_BIN} -n true &> /dev/null; then
     echo -e "\n ${c_magenta} Authentication is required${c_default} ${c_green}(Please input your password):${c_default} \n"

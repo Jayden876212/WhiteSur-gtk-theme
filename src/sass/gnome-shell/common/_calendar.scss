@@ -5,7 +5,7 @@ $popover_bubble_bg: if($variant == 'light', rgba(white, 0.95), rgba(lighten($bas
 %popover_bubble {
   color: $alt_fg_color;
   background-color: $popover_bubble_bg;
-  border-radius: $mn_radius !important;
+  border-radius: $base_border_radius !important;
   border: none;
   box-shadow: 0 1px 2px rgba(black, 0.02) !important;
   text-shadow: none;
@@ -39,30 +39,29 @@ $popover_bubble_bg: if($variant == 'light', rgba(white, 0.95), rgba(lighten($bas
   }
 }
 
-.clock-display-box {
-  spacing: 2px;
-
-  .clock {
-    padding-left: $base_padding * 2;
-    padding-right: $base_padding * 2;
-  }
-}
-
 // overall menu
 #calendarArea {
-  padding: $base_padding * 1.5 0;
+  padding: 4px 0;
 }
 
 // Calendar menu side column
 .datemenu-calendar-column {
   spacing: $base_spacing;
-  border: 0 solid $borders_color;
-  padding: 0 0 0 $base_padding * 2;
+  border: none;
 
-  &:ltr { margin-right: $base_margin * 2; border-left-width: 0; }
-  &:rtl { margin-left: $base_margin * 2; border-right-width: 0; }
+  &:ltr {
+    margin-right: 0;
+    padding-left: $base_padding;
+    border-left-width: 0;
+  }
 
-  .datemenu-displays-section { padding-bottom: 0; }
+  &:rtl {
+    margin-left: 0;
+    padding-right: $base_padding;
+    border-right-width: 0;
+  }
+
+  .datemenu-displays-section { padding: 0; }
 
   .datemenu-displays-box {
     spacing: $base_spacing;
@@ -77,8 +76,7 @@ $popover_bubble_bg: if($variant == 'light', rgba(white, 0.95), rgba(lighten($bas
 }
 
 .datemenu-today-button,
-.datemenu-displays-box,
-.message-list-sections {
+.datemenu-displays-box {
   margin: 4px 8px;
 }
 
@@ -118,12 +116,12 @@ $popover_bubble_bg: if($variant == 'light', rgba(white, 0.95), rgba(lighten($bas
 /* Calendar */
 .calendar {
   border: none;
-  box-shadow: 0 1px 2px rgba(black, 0.02) !important;
-  background-color: $popover_bubble_bg;
+  box-shadow: none !important;
+  background-color: transparent;
   padding: $base_padding !important;
-  margin: 0 12px !important;
+  margin: 0 4px !important;
   text-shadow: none;
-  border-radius: $mn_radius;
+  // border-radius: $base_border_radius;
 
   // month
   .calendar-month-label {
@@ -189,11 +187,11 @@ $popover_bubble_bg: if($variant == 'light', rgba(white, 0.95), rgba(lighten($bas
     }
 
     &.calendar-day-heading {  //day of week heading
-      width: $menuitem_size;
-      height: $menuitem_size - 7px;
-      margin-top: 2px;
-      padding: 7px 0 0;
-      border-radius: $circular_radius;
+      width: $menuitem_size !important;
+      height: $menuitem_size - 6px !important;
+      margin-top: 6px !important;
+      padding: 0 !important;
+      // border-radius: $circular_radius;
       background-color: transparent;
       color: $hint_fg_color;
       @include font(caption);
@@ -285,8 +283,8 @@ $popover_bubble_bg: if($variant == 'light', rgba(white, 0.95), rgba(lighten($bas
 .weather-button,
 .events-button {
   @extend %popover_bubble;
-  padding: $base_padding * 2 !important;
-  margin: 2px 4px !important;
+  padding: $base_padding * 3 !important;
+  margin: 3px 4px !important;
 }
 
 // Events
@@ -345,8 +343,6 @@ $popover_bubble_bg: if($variant == 'light', rgba(white, 0.95), rgba(lighten($bas
 
 // Weather
 .weather-button {
-  margin-bottom: 6px !important;
-
   .weather-box {
     spacing: $base_spacing + $base_margin;
   }

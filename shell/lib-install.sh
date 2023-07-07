@@ -324,16 +324,16 @@ install_beggy() {
 
   case "${background}" in
     blank)
-      cp -r "${THEME_SRC_DIR}/assets/gnome-shell/common-assets/background-blank.png"          "${WHITESUR_TMP_DIR}/beggy.png" ;;
+      cp -r "${THEME_SRC_DIR}/assets/gnome-shell/backgrounds/background-blank.png"            "${WHITESUR_TMP_DIR}/beggy.png" ;;
     default)
       if [[ "${no_blur}" == "false" && "${no_darken}" == "true" ]]; then
-        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/common-assets/background-blur.png"         "${WHITESUR_TMP_DIR}/beggy.png"
+        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/backgrounds/background-blur.png"           "${WHITESUR_TMP_DIR}/beggy.png"
       elif [[ "${no_blur}" == "false" && "${no_darken}" == "false" ]]; then
-        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/common-assets/background-blur-darken.png"  "${WHITESUR_TMP_DIR}/beggy.png"
+        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/backgrounds/background-blur-darken.png"    "${WHITESUR_TMP_DIR}/beggy.png"
       elif [[ "${no_blur}" == "true" && "${no_darken}" == "true" ]]; then
-        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/common-assets/background-default.png"      "${WHITESUR_TMP_DIR}/beggy.png"
+        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/backgrounds/background-default.png"        "${WHITESUR_TMP_DIR}/beggy.png"
       else
-        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/common-assets/background-darken.png"       "${WHITESUR_TMP_DIR}/beggy.png"
+        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/backgrounds/background-darken.png"         "${WHITESUR_TMP_DIR}/beggy.png"
       fi
       ;;
     *)
@@ -382,7 +382,7 @@ install_shelly() {
   fi
 
   if [[ "${GNOME_VERSION}" == 'none' ]]; then
-    local GNOME_VERSION='42-0'
+    local GNOME_VERSION='44-0'
   fi
 
   mkdir -p                                                                                    "${TARGET_DIR}"
@@ -502,6 +502,8 @@ install_theemy() {
 
   mkdir -p                                                                                    "${TARGET_DIR}/plank"
   cp -r "${THEME_SRC_DIR}/other/plank/theme${color}/"*".theme"                                "${TARGET_DIR}/plank"
+
+  cp -r "${THEME_SRC_DIR}/assets/unity"                                                       "${TARGET_DIR}"
 }
 
 remove_packy() {
@@ -678,15 +680,21 @@ install_firefox_theme() {
 
   if [[ "${monterey}" == 'true' ]]; then
     udo cp -rf "${FIREFOX_SRC_DIR}"/Monterey                                                  "${TARGET_DIR}"
-    udo cp -rf "${FIREFOX_SRC_DIR}"/WhiteSur/{icons,titlebuttons,pages}                       "${TARGET_DIR}"/Monterey
+    udo cp -rf "${FIREFOX_SRC_DIR}"/common/{icons,titlebuttons,pages}                         "${TARGET_DIR}"/Monterey
+    udo cp -rf "${FIREFOX_SRC_DIR}"/common/*.css                                              "${TARGET_DIR}"/Monterey
+    udo cp -rf "${FIREFOX_SRC_DIR}"/common/parts/*.css                                        "${TARGET_DIR}"/Monterey/parts
     udo cp -rf "${FIREFOX_SRC_DIR}"/userContent-Monterey.css                                  "${TARGET_DIR}"/userContent.css
     if [[ "${alttheme}" == 'true' ]]; then
       udo cp -rf "${FIREFOX_SRC_DIR}"/userChrome-Monterey-alt.css                             "${TARGET_DIR}"/userChrome.css
+      udo cp -rf "${FIREFOX_SRC_DIR}"/WhiteSur/parts/headerbar-urlbar.css                     "${TARGET_DIR}"/Monterey/parts/headerbar-urlbar-alt.css
     else
       udo cp -rf "${FIREFOX_SRC_DIR}"/userChrome-Monterey.css                                 "${TARGET_DIR}"/userChrome.css
     fi
   else
     udo cp -rf "${FIREFOX_SRC_DIR}"/WhiteSur                                                  "${TARGET_DIR}"
+    udo cp -rf "${FIREFOX_SRC_DIR}"/common/{icons,titlebuttons,pages}                         "${TARGET_DIR}"/WhiteSur
+    udo cp -rf "${FIREFOX_SRC_DIR}"/common/*.css                                              "${TARGET_DIR}"/WhiteSur
+    udo cp -rf "${FIREFOX_SRC_DIR}"/common/parts/*.css                                        "${TARGET_DIR}"/WhiteSur/parts
     udo cp -rf "${FIREFOX_SRC_DIR}"/userChrome-WhiteSur.css                                   "${TARGET_DIR}"/userChrome.css
     udo cp -rf "${FIREFOX_SRC_DIR}"/userContent-WhiteSur.css                                  "${TARGET_DIR}"/userContent.css
   fi
@@ -695,10 +703,10 @@ install_firefox_theme() {
 }
 
 config_firefox() {
-  # if has_snap_app firefox; then
-  #   local TARGET_DIR="${FIREFOX_SNAP_THEME_DIR}"
-  #   local FIREFOX_DIR="${FIREFOX_SNAP_DIR_HOME}"
-  if has_flatpak_app org.mozilla.firefox; then
+  if has_snap_app firefox; then
+    local TARGET_DIR="${FIREFOX_SNAP_THEME_DIR}"
+    local FIREFOX_DIR="${FIREFOX_SNAP_DIR_HOME}"
+  elif has_flatpak_app org.mozilla.firefox; then
     local TARGET_DIR="${FIREFOX_FLATPAK_THEME_DIR}"
     local FIREFOX_DIR="${FIREFOX_FLATPAK_DIR_HOME}"
   else
@@ -723,9 +731,9 @@ config_firefox() {
 }
 
 edit_firefox_theme_prefs() {
-  # if has_snap_app firefox; then
-  #   local TARGET_DIR="${FIREFOX_SNAP_THEME_DIR}"
-  if has_flatpak_app org.mozilla.firefox; then
+  if has_snap_app firefox; then
+    local TARGET_DIR="${FIREFOX_SNAP_THEME_DIR}"
+  elif has_flatpak_app org.mozilla.firefox; then
     local TARGET_DIR="${FIREFOX_FLATPAK_THEME_DIR}"
   else
     local TARGET_DIR="${FIREFOX_THEME_DIR}"
@@ -737,12 +745,22 @@ edit_firefox_theme_prefs() {
 }
 
 remove_firefox_theme() {
-  rm -rf "${FIREFOX_DIR_HOME}/"*"default"*"/chrome"
-  rm -rf "${FIREFOX_THEME_DIR}"
-  rm -rf "${FIREFOX_FLATPAK_DIR_HOME}/"*"default"*"/chrome"
-  rm -rf "${FIREFOX_FLATPAK_THEME_DIR}"
-  rm -rf "${FIREFOX_SNAP_DIR_HOME}/"*"default"*"/chrome"
-  rm -rf "${FIREFOX_SNAP_THEME_DIR}"
+  if has_snap_app firefox; then
+    local TARGET_DIR="${FIREFOX_SNAP_THEME_DIR}"
+  elif has_flatpak_app org.mozilla.firefox; then
+    local TARGET_DIR="${FIREFOX_FLATPAK_THEME_DIR}"
+  else
+    local TARGET_DIR="${FIREFOX_THEME_DIR}"
+  fi
+
+  [[ -f "${TARGET_DIR}"/customChrome.css && ! -f "${TARGET_DIR}"/customChrome.css.bak ]] && cp -r "${TARGET_DIR}"/customChrome.css "${TARGET_DIR}"/customChrome.css.bak
+  [[ -f "${TARGET_DIR}"/userChrome.css && ! -f "${TARGET_DIR}"/userChrome.css.bak ]] && cp -r "${TARGET_DIR}"/userChrome.css "${TARGET_DIR}"/userChrome.css.bak
+  [[ -f "${TARGET_DIR}"/userContent.css && ! -f "${TARGET_DIR}"/userContent.css.bak ]] && cp -r "${TARGET_DIR}"/userContent.css "${TARGET_DIR}"/userContent.css.bak
+
+  rm -rf "${TARGET_DIR}/${THEME_NAME}"
+  rm -rf "${TARGET_DIR}"/customChrome.css
+  rm -rf "${TARGET_DIR}"/userChrome.css
+  rm -rf "${TARGET_DIR}"/userContent.css
 }
 
 ###############################################################################
@@ -873,10 +891,10 @@ gtk_base() {
 customize_theme() {
   cp -rf "${THEME_SRC_DIR}/sass/_theme-options"{".scss","-temp.scss"}
 
-  # Darker dark colors
+  # Nord dark colors
   if [[ "${colorscheme}" == '-nord' ]]; then
-    prompt -s "Changing color scheme style to nord style ...\n"
-    sed $SED_OPT "/\$colorscheme/s/default/nord/"                                "${THEME_SRC_DIR}/sass/_theme-options-temp.scss"
+    prompt -s "Changing ColorScheme style to nord version ...\n"
+    sed $SED_OPT "/\$colorscheme/s/default/nord/"                               "${THEME_SRC_DIR}/sass/_theme-options-temp.scss"
   fi
 
   # Darker dark colors
