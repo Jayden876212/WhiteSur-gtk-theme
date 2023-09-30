@@ -11,9 +11,12 @@
 }
 
 /* Tabs bar height */
-#tabbrowser-tabs,
-#tabbrowser-tabs arrowscrollbox {
+#tabbrowser-tabs {
 	--tab-min-height: 32px !important;
+}
+
+#tabbrowser-tabs:not([secondarytext-unsupported]) .tab-label-container {
+	max-height: 32px !important;
 }
 
 /* Extra margin for the first and last tabs */
@@ -109,6 +112,7 @@ tab[selected]:-moz-window-inactive {
 	justify-content: center !important;
 	align-items: center !important;
 	min-width: 44px !important;
+	min-height: 32px !important;
 	padding: 0 8px !important;
 }
 
@@ -339,7 +343,7 @@ tab[selected]:-moz-window-inactive {
 
 .tab-background {
 	background-color: transparent !important;
-	transition: all 200ms;
+	transition: background-color 200ms;
 }
 
 .tab-background, .tab-stack {

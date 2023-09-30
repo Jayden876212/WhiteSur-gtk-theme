@@ -530,9 +530,11 @@ config_gtk4() {
 
   # Install gtk4.0 into config for libadwaita
   mkdir -p                                                                                    "${TARGET_DIR}"
-  rm -rf                                                                                      "${TARGET_DIR}/"{gtk.css,gtk-dark.css,assets,windows-assets}
-  sassc ${SASSC_OPT} "${THEME_SRC_DIR}/main/gtk-4.0/gtk${color}.scss"                         "${TARGET_DIR}/gtk.css"
-  sassc ${SASSC_OPT} "${THEME_SRC_DIR}/main/gtk-4.0/gtk-Dark.scss"                            "${TARGET_DIR}/gtk-dark.css"
+  # backup_file "${TARGET_DIR}/gtk.css" "udo"
+  rm -rf                                                                                      "${TARGET_DIR}/"{gtk.css,gtk-Light.css,gtk-Dark.css,assets,windows-assets}
+  sassc ${SASSC_OPT} "${THEME_SRC_DIR}/main/gtk-4.0/gtk-Light.scss"                           "${TARGET_DIR}/gtk-Light.css"
+  sassc ${SASSC_OPT} "${THEME_SRC_DIR}/main/gtk-4.0/gtk-Dark.scss"                            "${TARGET_DIR}/gtk-Dark.css"
+  ln -sf "${TARGET_DIR}/gtk-${colors}.css"                                                    "${TARGET_DIR}/gtk.css"
   cp -r "${THEME_SRC_DIR}/assets/gtk/common-assets/assets"                                    "${TARGET_DIR}"
   cp -r "${THEME_SRC_DIR}/assets/gtk/common-assets/sidebar-assets/"*".png"                    "${TARGET_DIR}/assets"
   cp -r "${THEME_SRC_DIR}/assets/gtk/scalable"                                                "${TARGET_DIR}/assets"
@@ -548,12 +550,23 @@ install_libadwaita() {
 }
 
 remove_libadwaita() {
-  rm -rf "${HOME}/.config/gtk-4.0/"{gtk.css,gtk-dark.css,assets,windows-assets}
+  # restore_file "${TARGET_DIR}/gtk.css"
+  rm -rf "${HOME}/.config/gtk-4.0/"{gtk.css,gtk-Light.css,gtk-Dark.css,assets,windows-assets}
 }
 
 ###############################################################################
 #                                   THEMES                                    #
 ###############################################################################
+
+fix_whiskermenu() {
+  if (command -v xfce4-popup-whiskermenu &> /dev/null) && $(sed -i "s|.*menu-opacity=.*|menu-opacity=95|" "$HOME/.config/xfce4/panel/whiskermenu"*".rc" &> /dev/null); then
+    sed -i "s|.*menu-opacity=.*|menu-opacity=95|" "$HOME/.config/xfce4/panel/whiskermenu"*".rc"
+  fi
+
+  if (pgrep xfce4-session &> /dev/null); then
+    xfce4-panel -r
+  fi
+}
 
 install_themes() {
   # "install_theemy" and "install_shelly" require "gtk_base", so multithreading
@@ -574,7 +587,7 @@ install_themes() {
     done
   done
 
-  stop_animation
+  stop_animation; fix_whiskermenu
 }
 
 remove_themes() {
@@ -789,7 +802,7 @@ install_dash_to_dock_theme() {
     if [[ "${GNOME_VERSION}" != '3-28'  ]]; then
       udo sassc ${SASSC_OPT} "${DASH_TO_DOCK_SRC_DIR}/stylesheet-4.scss"                       "${DASH_TO_DOCK_DIR_HOME}/stylesheet.css"
     else
-      udo sassc ${SASSC_OPT} "${DASH_TO_DOCK_SRC_DIR}/stylesheet-3.scss"                      "${DASH_TO_DOCK_DIR_HOME}/stylesheet.css"
+      udo sassc ${SASSC_OPT} "${DASH_TO_DOCK_SRC_DIR}/stylesheet-3.scss"                       "${DASH_TO_DOCK_DIR_HOME}/stylesheet.css"
     fi
   elif [[ -d "${DASH_TO_DOCK_DIR_ROOT}" ]]; then
     backup_file "${DASH_TO_DOCK_DIR_ROOT}/stylesheet.css" "sudo"
