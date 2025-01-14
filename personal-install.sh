@@ -1,1 +1,1 @@
-./install.sh --nautilus-style glassy --color Dark --theme blue --nord --libadwaita --opacity normal --name "WhiteSur-tdljayden-nordic"
+./install.sh --nautilus glassy --color dark --theme blue --scheme nord --libadwaita --opacity normal --name "WhiteSur-tdljayden-nordic"
