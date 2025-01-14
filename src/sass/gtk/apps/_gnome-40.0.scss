@@ -9,7 +9,7 @@ $nautilus_borders_color: if($variant=='light', darken(rgba($dark_sidebar_bg, 1),
 $flap_sidebar_size: 240px;
 
 @if $nautilus_style == 'stable' {
-  $nautilus_header_image: linear-gradient(90deg, $dark_sidebar_bg $flap_sidebar_size,
+  $nautilus_header_image: linear-gradient(90deg, transparent $flap_sidebar_size,
                                                  $nautilus_borders_color $flap_sidebar_size,
                                                  $nautilus_borders_color ($flap_sidebar_size + 1px),
                                                  $base_color ($flap_sidebar_size + 1px));
@@ -19,29 +19,61 @@ $flap_sidebar_size: 240px;
 }
 
 @if $nautilus_style == 'glassy' {
-  $nautilus_header_image: linear-gradient(90deg, $dark_sidebar_bg ($flap_sidebar_size / 2),
+  $nautilus_header_image: linear-gradient(90deg, transparent ($flap_sidebar_size / 2),
                                                  $dark_header_bg 40%);
 
   $nautilus_header_borders_image: linear-gradient(90deg, rgba($header_border, 0) (($flap_sidebar_size / 2) - 40px),
                                                          $header_border 40%);
 }
 
+%nautilus_view {
+  border-radius: $bt_radius;
+  transition: background-color $longer_duration $deceleration_curve;
+
+  &:hover {
+    background-color: $fill_color;
+    transition-duration: $shorter_duration;
+  }
+
+  &:active {
+    color: $fg_color;
+    background-color: $divider_color;
+  }
+
+  &:disabled {
+    color: $disabled_fg_color;
+  }
+
+  &:selected {
+    color: $fg_color;
+    background-color: $visit_color;
+
+    &:hover { background-color: $track_color; }
+
+    &:active { background-color: $active_color; }
+  }
+}
+
 .nautilus-window {
   @if $nautilus_style == 'stable' or $nautilus_style == 'glassy' {
     &.background.csd {
-      background-color: transparent;
+      &, &:backdrop {
+        background-color: $dark_sidebar_bg;
+      }
 
-      headerbar {
-        background-color: transparent;
-        border: none;
-        background-image: $nautilus_header_image;
-        border-image: $nautilus_header_borders_image 0 0 1 / 0px 0px 1px stretch;
+      &:not(.view) headerbar {
+        &, &:backdrop {
+          background-color: transparent;
+          border: none;
+          background-image: $nautilus_header_image;
+          border-image: $nautilus_header_borders_image 0 0 1 / 0px 0px 1px stretch;
+        }
       }
     }
   }
 
   @if $nautilus_style == 'stable' {
-    headerbar {
+    &:not(.view) headerbar {
       box.start > box {
         margin-left: 144px;
       }
@@ -52,20 +84,32 @@ $flap_sidebar_size: 240px;
     }
   }
 
-  headerbar > windowhandle > box { padding: 0 10px; }
-
-  placessidebar.background {
-    row.sidebar-row {
-      .sidebar-icon { color: if($variant == 'light', $selected_bg_color, lighten($selected_bg_color, 20%)); }
+  flap.unfolded,
+  .sidebar-pane {
+    &, &:backdrop {
+      background-color: transparent;
     }
-  }
 
-  flap.unfolded {
-    > placessidebar.background {
+    placessidebar {
       background: none;
 
-      list.navigation-sidebar {
-        background-color: $dark_sidebar_bg;
+      .navigation-sidebar:not(.view) {
+        > row {
+          &:selected {
+            background-color: if($variant == 'light', rgba(black, 0.15), rgba(white, 0.15));
+            color: $fg_color;
+          }
+
+          &.sidebar-row {
+            .sidebar-icon {
+              @if $gnome_version == 'old' {
+                color: if($variant == 'light', $selected_bg_color, lighten($selected_bg_color, 20%));
+              } @else {
+                color: if($variant == 'light', $selected_bg_color, color-mix(in srgb, white 20%, $selected_bg_color));
+              }
+            }
+          }
+        }
       }
     }
 
@@ -74,8 +118,14 @@ $flap_sidebar_size: 240px;
     }
   }
 
+  flap.unfolded {
+    list.navigation-sidebar {
+      background-color: transparent;
+    }
+  }
+
   flap.folded {
-    > placessidebar {
+    placessidebar {
       border-right: 1px solid $header_border;
     }
   }
@@ -84,23 +134,28 @@ $flap_sidebar_size: 240px;
     .box {
       @if $monterey == 'false' {
         background-color: mix(black, $base_color, 6%);
+        border-top: 1px solid $borders_color;
       } @else {
         background-color: $base_color;
       }
+
+      tabbox { margin: 0 -3px; }
     }
   }
 
-  .nautilus-grid-view.view {
+  .nautilus-grid-view {
+    background-color: $base_color;
+
     child.activatable {
-      border-radius: $bt_radius;
-      @extend %row_activatable;
+      @extend %nautilus_view;
     }
   }
 
-  .nautilus-list-view.view {
+  .nautilus-list-view {
     padding: 0;
     margin: 0;
     border-spacing: 0;
+    background-color: $base_color;
 
     listview.view {
       padding: 0;
@@ -110,8 +165,19 @@ $flap_sidebar_size: 240px;
       > row.activatable {
         padding: 0;
         margin: 0;
-        border-radius: $bt_radius;
-        @extend %row_activatable;
+        @extend %nautilus_view;
+
+        > cell {
+          padding: 0;
+
+          > widget#NautilusViewCell {
+            padding: $container_padding $container_padding * 1.5;
+          }
+        }
+
+        + row {
+          margin-top: $container_padding / 2;
+        }
       }
     }
   }
@@ -130,7 +196,6 @@ $flap_sidebar_size: 240px;
       min-height: 24px;
       min-width: 24px;
       padding: 0;
-      -gtk-icon-shadow: none;
       @extend %selected-button;
     }
   }
@@ -144,9 +209,8 @@ $flap_sidebar_size: 240px;
 }
 
 #NautilusQueryEditor { // search entry
-  padding: 0 $container_padding;
+  padding: 2px $container_padding;
   border-spacing: 0;
-  margin: 9px 0 8px 0;
 
   > image, > box, > text {
     margin: 0;
@@ -172,7 +236,7 @@ $flap_sidebar_size: 240px;
 #NautilusPathBar {
   background-color: $fill_color;
   border-radius: $bt_radius;
-  margin: 8px 0 8px $container_padding;
+  margin: 0 0 0 $container_padding;
 
   #NautilusPathButton {
     margin: 0 $container_padding / 2;
@@ -196,6 +260,12 @@ $flap_sidebar_size: 240px;
   }
 }
 
+navigation-view-page > toolbarview > scrolledwindow > viewport > clamp {
+  > box > box > stack > button {
+    margin-top: $container_padding * 2;
+  }
+}
+
 // Extensions
 window.nightthemeswitcher headerbar {
   background: $header_bg;
@@ -207,7 +277,8 @@ window.nightthemeswitcher headerbar {
 //
 
 window.background.csd {
-  > contents {
+  > contents,
+  > widget { // 44.0
     > leaflet.unfolded > box {
       > headerbar {
         @extend %side_headerbar_left;
@@ -238,51 +309,111 @@ window.background.csd {
 
       > stack.background { background-color: $base_color; }
     }
+  }
+}
 
-    preferencesgroup > box {
-      button.background-preview-button {
-        padding: $container_padding / 2;
-        outline: 2px solid transparent;
-        outline-offset: 0;
-        border-radius: $bt_radius + $container_padding / 2;
+preferencesgroup > box {
+  button.background-preview-button {
+    padding: $container_padding / 2;
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    border-radius: $bt_radius + $container_padding / 2;
 
-        &, &:hover, &:active, &:checked {
-          background: none;
-          border: none;
-          box-shadow: none;
-        }
+    &, &:hover, &:active, &:checked {
+      background: none;
+      border: none;
+      box-shadow: none;
+    }
 
-        &:hover {
-          outline-color: $alt_disabled_fg_color;
-        }
+    &:hover {
+      outline-color: $alt_disabled_fg_color;
+    }
 
-        &:active {
-          outline-color: $alt_fg_color;
-        }
+    &:active {
+      outline-color: $alt_fg_color;
+    }
 
-        &:checked {
-          outline-color: $selected_bg_color;
-        }
+    &:checked {
+      outline-color: $selected_bg_color;
+    }
+  }
+
+  flowbox.background-flowbox > flowboxchild {
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    border-radius: $bt_radius + 3px;
+    padding: 3px;
+
+    &:hover {
+      outline-color: $alt_disabled_fg_color;
+    }
+
+    &:active {
+      outline-color: $alt_fg_color;
+    }
+
+    &:selected {
+      outline-color: $selected_bg_color;
+      background-color: transparent;
+    }
+  }
+
+  .cutout-button { background-color: $dialog_bg_color; }
+
+  @if $gnome_version == 'new' {
+    button.accent-button {
+      min-height: 24px;
+      min-width: 24px;
+      padding: $base_padding / 2;
+      border-radius: $circular_radius;
+      background: var(--accent-bg-color);
+      outline: none;
+      background-clip: content-box;
+      box-shadow: none;
+      border: none;
+
+      &:hover { box-shadow: 0 0 0 3px $divider_color; }
+
+      &:checked { box-shadow: 0 0 0 3px var(--accent-bg-color); }
+
+      &.blue, &.teal, &.green, &.yellow, &.orange, &.red, &.pink, &.purple, &.slate {
+        --accent-color: oklab(from var(--accent-bg-color) var(--standalone-color-oklab));
       }
 
-      flowbox.background-flowbox > flowboxchild {
-        outline: 2px solid transparent;
-        outline-offset: 0;
-        border-radius: $bt_radius + 3px;
-        padding: 3px;
+      &.blue {
+        --accent-bg-color: var(--accent-blue);
+      }
 
-        &:hover {
-          outline-color: $alt_disabled_fg_color;
-        }
+      &.teal {
+        --accent-bg-color: var(--accent-teal);
+      }
 
-        &:active {
-          outline-color: $alt_fg_color;
-        }
+      &.green {
+        --accent-bg-color: var(--accent-green);
+      }
 
-        &:selected {
-          outline-color: $selected_bg_color;
-          background-color: transparent;
-        }
+      &.yellow {
+        --accent-bg-color: var(--accent-yellow);
+      }
+
+      &.orange {
+        --accent-bg-color: var(--accent-orange);
+      }
+
+      &.red {
+        --accent-bg-color: var(--accent-red);
+      }
+
+      &.pink {
+        --accent-bg-color: var(--accent-pink);
+      }
+
+      &.purple {
+        --accent-bg-color: var(--accent-purple);
+      }
+
+      &.slate {
+        --accent-bg-color: var(--accent-slate);
       }
     }
   }
@@ -294,7 +425,8 @@ window.background.csd {
 //
 
 window.background {
-  > contents > toastoverlay > leaflet {
+  > contents > toastoverlay > leaflet,
+  > widget > toastoverlay > leaflet { // 44.0
     > box {
       background-color: $base_color;
 
@@ -326,26 +458,11 @@ window.background {
         }
       }
     }
-
-    .current-week {
-      background-color: $fill_color;
-    }
-
-    button.circular.day {
-      border: none;
-      box-shadow: none;
-      @extend %flat_button;
-    }
-
-    datechooser navigator > button.flat.pill {
-      padding: 0 $container_padding * 2;
-      min-height: $menuitem_size;
-      min-width: $menuitem_size;
-    }
   }
 
   &.maximized, &.tiled {
-    > contents > toastoverlay > leaflet {
+    > contents > toastoverlay > leaflet,
+    > widget > toastoverlay > leaflet {
       > box {
         > headerbar {
           &, &:backdrop {
@@ -356,6 +473,33 @@ window.background {
       }
     }
   }
+}
+
+datechooser {
+  .current-week {
+    background-color: $fill_color;
+  }
+  
+  button.circular.day {
+    border: none;
+    box-shadow: none;
+    @extend %flat_button;
+
+    &:selected {
+      background-color: $selected_bg_color;
+      color: $selected_fg_color;
+    }
+  }
+
+  navigator > button.flat {
+    padding: 0;
+    min-height: $menuitem_size;
+    min-width: $menuitem_size;
+  }
+}
+
+agenda-view list.background {
+  background-color: transparent;
 }
 
 menubutton.flat.popup.sources-button {
@@ -610,14 +754,14 @@ screenshot-carousel button,
   padding: $container_padding / 2 $container_padding * 1.5;
 }
 
-flowboxchild.card {
+flowboxchild.card:not(.category-tile) {
   padding: 0;
   border: none;
   box-shadow: none;
   background: none;
 }
 
-button.card.category-tile {
+.category-tile.card {
   padding: $container_padding * 3.5;
   border: none;
   border-radius: $bt_radius;
@@ -630,6 +774,7 @@ button.card.category-tile {
     min-width: 130px;
     font-size: 105%;
     font-weight: normal;
+    box-shadow: none;
   }
 
   // Styling for specific category buttons.
@@ -740,10 +885,8 @@ clamp.large .category-tile:not(.category-tile-iconless) {
 
 // The rest of the featured-tile CSS is loaded at runtime in gs-feature-tile.c
 .featured-tile {
-  all: unset;
   padding: 0;
   box-shadow: none;
-  color: $fg_color;
 
   label.title-1 {
     margin-top: $container_padding;
@@ -1066,14 +1209,6 @@ scrolledwindow.fake-adw-status-page > viewport > box > clamp:not(:last-child) > 
 scrolledwindow.fake-adw-status-page > viewport > box > clamp > box > .icon:not(:last-child) { margin-bottom: $container_padding * 6; }
 scrolledwindow.fake-adw-status-page > viewport > box > clamp > box > .title:not(:last-child) { margin-bottom: $container_padding * 2; }
 
-statuspage.icon-dropshadow image.icon {
-	-gtk-icon-shadow: 0 1px 12px rgba(0,0,0,0.05),
-	                  0 -1px rgba(0,0,0,0.05),
-	                  1px 0 rgba(0,0,0,0.1),
-	                  0 1px rgba(0,0,0,0.3),
-	                  -1px 0 rgba(0,0,0,0.1);
-}
-
 window.info scrollbar.vertical {
   margin-top: 48px;
   background: none;
@@ -1122,10 +1257,66 @@ spinner.fade-in:checked {
 }
 
 //
+// Gnome Tweaks
+//
+
+window.background.csd {
+  > dialog-host > widget > widget > box > leaflet {
+    > headerbar.titlebar.tweak-titlebar-left {
+      @extend %side_headerbar_left;
+    }
+
+    > headerbar.titlebar.tweak-titlebar-right {
+      @extend %side_headerbar_right;
+    }
+
+    > separator {
+      @extend %side_separator;
+    }
+
+    > box > searchbar {
+      @extend %side_searchbar;
+    }
+
+    list.navigation-sidebar {
+      @extend %side_style_left;
+    }
+
+    stack.background {
+      background-color: $base_color;
+    }
+  }
+}
+
+//
+// Ptyxis
+//
+
+.ptyxis-window {
+  vte-terminal {
+    background: none;
+  }
+}
+
+//
 // Misc (other)
 //
 
 #desktopwindow.background {
   background-color: transparent;
   background-image: none;
+}
+
+//
+// Pamac manager
+//
+
+dialog-host > widget > widget > toolbarview {
+  > box > entry.search {
+    margin: $base_padding * 2 0;
+
+    + toastoverlay > stack {
+      border-top: 1px solid $header_border;
+    }
+  }
 }

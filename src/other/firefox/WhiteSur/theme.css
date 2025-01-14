@@ -11,12 +11,13 @@
 @import "parts/popups.css";
 @import "parts/tabsbar.css";
 @import "parts/findbar.css";
+@import "parts/sidebar.css";
 @import "parts/dialogs.css";
+@import "parts/notification.css";
+@import "parts/infobar.css";
 @import "parts/video-player.css";
 @import "parts/remove-white-flash.css";
-@import "parts/custom-icons.css";
 @import "parts/icons.css";
-@import "parts/video-player.css";
 @import "colors/light.css";
 @import "colors/dark.css";
 @namespace xul "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
@@ -32,4 +33,5 @@
 #customization-container {
 	background-color: var(--gnome-browser-before-load-background) !important;
 	color: var(--gnome-toolbar-color) !important;
+	background-image: none !important;
 }

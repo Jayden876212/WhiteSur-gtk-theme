@@ -47,13 +47,72 @@ $panel_height: $menuitem_size;
   }
 }
 
+%normal_activites {
+  -natural-hpadding: $base_padding * 3;
+  color: $panel_fg;
+
+  StBoxLayout {
+    padding: 0 $scaled_padding * 0.5;
+    spacing: $container_padding;
+  }
+
+  .workspace-dot {
+    border-radius: $circular_radius;
+    min-width: $scalable_icon_size * 0.5;
+    min-height: $scalable_icon_size * 0.5;
+    background-color: $panel_fg;
+  }
+
+  &:overview {
+    .workspace-dot {
+      background-color: $light_fg_color;
+    }
+  }
+}
+
+%apple_activites {
+  -natural-hpadding: $base_padding * 2;
+  background-image: url("assets/activities.svg");
+  background-position: center center;
+  background-size: 24px 24px;
+  width: 24px;
+  height: 24px;
+  color: transparent;
+  font-size: 0;
+
+  > * { width: $medium_size; }
+
+  StBoxLayout {
+    spacing: 0;
+  }
+
+  .workspace-dot {
+    background-color: transparent;
+  }
+
+  &:active, &:overview, &:focus, &:checked {
+    border: none;
+    color: transparent;
+  }
+
+  &:overview { background-color: transparent; }
+
+  @if $variant == 'light' {
+    @if $panel_font == 'black' or $trans == 'false' {
+      &:overview {
+        background-image: url("assets/activities-white.svg");
+      }
+    }
+  }
+}
+
 #panel {
   background-color: $panel_bg;
-  font-weight: normal;
+  font-weight: 500;
+  @extend %numeric;
   color: $panel_fg;
-  font-feature-settings: "tnum";
   transition-duration: 250ms;
-  @include font(body-1);
+  // @include font(body-1);
   height: $panel_height !important;
   box-shadow: 0 5px 16px rgba(black, 0.05);
 
@@ -71,7 +130,6 @@ $panel_height: $menuitem_size;
   .panel-button {
     -natural-hpadding: 12px;
     -minimum-hpadding: 12px;
-    font-weight: normal;
     color: $panel_fg;
     transition-duration: 150ms;
     border-radius: $bt_radius;
@@ -149,6 +207,10 @@ $panel_height: $menuitem_size;
         padding: 0 $base_padding + 12px !important;
         margin: 0 !important;
       }
+
+      .messages-indicator {
+        icon-size: $scalable_icon_size;
+      }
     }
 
     &:hover, &:active, &:overview, &:focus, &:checked {
@@ -197,32 +259,52 @@ $panel_height: $menuitem_size;
     }
 
     &#panelActivities { // Activities button
-      background-image: url("assets/activities.svg");
-      background-position: center center;
-      background-size: 24px 24px;
-      width: 24px;
-      height: 24px;
       background-gradient-direction: none;
       border: none;
-      color: transparent;
-      font-size: 0;
 
-      > * { width: $medium_size; }
+      @if $activities == 'icon' {
+        @extend %apple_activites;
+      } @else {
+        @extend %normal_activites;
+      }
+    }
 
-      &:active, &:overview, &:focus, &:checked {
-        border: none;
-        color: transparent;
-        // background-image: url("assets/activities-active.svg");
+    // screen activity indicators
+    &.screen-recording-indicator,
+    &.screen-sharing-indicator {
+      border: 3px solid transparent;
+      background-color: transparent;
+
+      StBoxLayout {
+        spacing: $scaled_padding;
       }
 
-      &:overview { background-color: transparent; }
+      StIcon {
+        icon-size: $scalable_icon_size;
+      }
+    }
 
-      @if $variant == 'light' {
-        @if $panel_font == 'black' or $trans == 'false' {
-          &:overview {
-            background-image: url("assets/activities-white.svg");
-          }
-        }
+    &.screen-recording-indicator {
+      box-shadow: inset 0 0 0 1000px $error_color !important;
+
+      &:hover {
+        box-shadow: inset 0 0 0 1000px mix($panel_fg, $error_color, 12%) !important;
+      }
+
+      &:active {
+        box-shadow: inset 0 0 0 1000px mix($panel_fg, $error_color, 24%) !important;
+      }
+    }
+
+    &.screen-sharing-indicator {
+      box-shadow: inset 0 0 0 1000px $warning_color !important;
+
+      &:hover {
+        box-shadow: inset 0 0 0 1000px mix($panel_fg, $warning_color, 12%) !important;
+      }
+
+      &:active {
+        box-shadow: inset 0 0 0 1000px mix($panel_fg, $warning_color, 24%) !important;
       }
     }
   }
@@ -243,6 +325,7 @@ $panel_height: $menuitem_size;
 
   // Input indicators
   Gjs_status_keyboard_InputSourceIndicator.panel-button, // Ibus
+  Gjs_appindicatorsupport_rgcjonas_gmail_com_indicatorStatusIcon_IndicatorStatusIcon.panel-button,
   Gjs_appindicatorsupport_rgcjonas_gmail_com_indicatorStatusIcon_AppIndicatorsIndicatorStatusIcon.panel-button { // Fcitx
     -natural-hpadding: 12px + $base_padding !important;
     -minimum-hpadding: 12px + $base_padding !important;
@@ -253,7 +336,7 @@ $panel_height: $menuitem_size;
   &.unlock-screen,
   &.login-screen,
   &.lock-screen {
-    background-color: if($trans == 'false' and $variant == 'light', transparent, transparent);
+    background-color: transparent;
     box-shadow: none;
 
     StLabel, StIcon { color: $light_alt_fg_color; }
@@ -294,6 +377,16 @@ $panel_height: $menuitem_size;
           }
         }
       }
+
+      @if $activities == 'default' {
+        &#panelActivities {
+          color: $light_fg_color;
+
+          .workspace-dot {
+            background-color: $light_fg_color;
+          }
+        }
+      }
     }
 
     .panel-corner {
@@ -306,4 +399,7 @@ $panel_height: $menuitem_size;
   // indicator for active
   .screencast-indicator,
   .remote-access-indicator { color: $warning_color; }
+
+  // important privacy related indicators
+  .privacy-indicator { color: $warning_color; }
 }

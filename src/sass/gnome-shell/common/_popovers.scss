@@ -69,7 +69,6 @@ $popop_menuitem_radius: $po_radius - $base_padding;
 .popup-menu {
   min-width: 12em;
   color: $alt_fg_color;
-  @include font(body-1);
 
   //.popup-status-menu-item { font-weight: normal;  color: pink; } //dunno what that is
   &.panel-menu {
@@ -98,7 +97,6 @@ $popop_menuitem_radius: $po_radius - $base_padding;
   border-radius: $po_radius;
   border: solid if($variant=='light', rgba(black, 0), rgba(black, 0.75));
   border-width: if($variant=='light', 0, 1px);
-  @include font(body-1);
 }
 
 .popup-menu-item {
@@ -128,7 +126,11 @@ $popop_menuitem_radius: $po_radius - $base_padding;
 
     &:active {
       color: $selected_fg_color !important;
-      background-color: mix($fg_color, $selected_bg_color, 5%) !important;
+      @if $gnome_version == 'old' {
+        background-color: mix($fg_color, $selected_bg_color, 5%) !important;
+      } @else {
+        background-color: st-mix($fg_color, $selected_bg_color, 5%) !important;
+      }
     }
 
     &:insensitive { color: $disabled_fg_color !important; }
@@ -142,10 +144,20 @@ $popop_menuitem_radius: $po_radius - $base_padding;
 
   &:active, &.selected:active {
     color: $selected_fg_color !important;
-    background-color: mix($fg_color, $selected_bg_color, 5%) !important;
+    @if $gnome_version == 'old' {
+      background-color: mix($fg_color, $selected_bg_color, 5%) !important;
+    } @else {
+      background-color: st-mix($fg_color, $selected_bg_color, 5%) !important;
+    }
   }
 
   &:insensitive { color: $disabled_fg_color !important; }
+
+  // add margin to switches in menu items
+  .toggle-switch {
+    &:ltr { margin-left: $base_margin; }
+    &:rtl { margin-right: $base_margin; }
+  }
 }
 
 .popup-sub-menu {
@@ -166,9 +178,18 @@ $popop_menuitem_radius: $po_radius - $base_padding;
 
     &:active {
       color: $selected_fg_color !important;
-      background-color: mix($fg_color, $selected_bg_color, 5%) !important;
+      @if $gnome_version == 'old' {
+        background-color: mix($fg_color, $selected_bg_color, 5%) !important;
+      } @else {
+        background-color: st-mix($fg_color, $selected_bg_color, 5%) !important;
+      }
     }
   }
+}
+
+.popup-ornamented-menu-item {
+  &:ltr { padding-left: $base_padding; }
+  &:rtl { padding-right: $base_padding; }
 }
 
 .popup-inactive-menu-item { //all icons and other graphical elements
@@ -186,11 +207,8 @@ $popop_menuitem_radius: $po_radius - $base_padding;
 
 // container for radio and check boxes
 .popup-menu-ornament {
-  width: 1.2em;
-  text-align: center !important;
-
-  &:ltr { text-align: right; }
-  &:rtl { text-align: left; }
+  icon-size: $scalable_icon_size !important;
+  width: $scalable_icon_size;
 }
 
 // desktop background menu

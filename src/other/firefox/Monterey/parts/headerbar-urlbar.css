@@ -2,43 +2,29 @@
 
 @namespace xul "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 
-#urlbar {
-	--urlbar-height: 32px !important;
-	--urlbar-container-height: 32px !important;
-	--urlbar-toolbar-height: 32px !important;
-	--urlbar-inner-padding: 0 !important;
-}
-
 toolbarspring {
 	display: none !important;
 }
 
 /* URL bar */
 #urlbar {
-/*	margin-top: -1px !important;*/
+	--urlbar-height: 32px !important;
+	--urlbar-container-height: 32px !important;
+	--urlbar-toolbar-height: 32px !important;
+	--urlbar-inner-padding: 0 !important;
 	box-shadow: none !important;
-	background: var(--gnome-popover-background) !important;
-	border-radius: 8px !important;
-	border: none !important;
-	padding: 0 !important;
-	max-width: 360px !important;
-}
-#urlbar-background {
-	box-shadow: none !important;
-	border: 0 !important;
-	background: transparent !important;
-	border-radius: 8px !important;
-	padding: 0 !important;
+	width: 360px !important;
+	min-width: 360px !important;
 }
 
-#urlbar:-moz-window-inactive {
-	background: var(--gnome-inactive-urlbar-background) !important;
-	border-color: var(--gnome-inactive-headerbar-background) !important;
+#urlbar[focused="true"]:not([suppress-focus-border]) > #urlbar-background {
+	outline-color: transparent !important;
 }
 
 #urlbar-container,
 #wrapper-urlbar-container,
-#urlbar #urlbar-input-container {
+#urlbar #urlbar-input-container,
+#urlbar .urlbar-input-container {
 	padding: 0 !important;
 	width: 360px !important;
 	min-width: 360px !important;
@@ -51,26 +37,38 @@ toolbarspring {
 	min-width: 360px !important;
 }
 
+#urlbar-background {
+	box-shadow: none !important;
+	border: none !important;
+	background: none !important;
+	border-radius: 8px !important;
+}
+
 #urlbar[breakout][breakout-extend] {
-	left: 0 !important;
-	top: 0 !important;
 	width: 360px !important;
 	z-index: 5 !important;
 	padding: 0 !important;
-	border-radius: 10px !important;
+	border-radius: 8px !important;
+	outline: 2px solid var(--gnome-focused-urlbar-border-color) !important;
+	outline-offset: -2px;
+	-moz-outline-radius: 8px;
+	transition: outline 100ms ease-out;
 }
+
 #urlbar[breakout][breakout-extend][open] {
 	height: auto !important;
 	max-height: unset !important;
 }
-#urlbar[breakout][breakout-extend] #urlbar-input-container {
+
+#urlbar[breakout][breakout-extend] #urlbar-input-container,
+#urlbar[breakout][breakout-extend] .urlbar-input-container {
 	height: 32px !important;
 	max-height: 32px !important;
 	padding: 0 !important;
 }
 
-#urlbar[breakout][breakout-extend][open] #urlbar-background {
-	box-shadow: var(--gnome-urlbar-box-shadow) !important;
+#urlbar:-moz-window-inactive {
+	border-color: var(--gnome-inactive-headerbar-background) !important;
 }
 
 #urlbar-input {
@@ -80,10 +78,20 @@ toolbarspring {
 
 /* URL bar results */
 .urlbarView {
-	background: transparent !important;
+	background: var(--gnome-popover-background) !important;
 	color: var(--gnome-toolbar-color) !important;
-	margin: 0 !important;
+	margin: 6px 0 0 0 !important;
 	width: 100% !important;
+	position: absolute !important;
+	box-shadow: var(--gnome-urlbar-box-shadow) !important;
+	border-radius: 12px !important;
+	border: 0 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+	.urlbarView {
+		border: 1px solid rgba(255, 255, 255, 0.1) !important;
+	}
 }
 
 .urlbarView-body-outer {
@@ -91,7 +99,7 @@ toolbarspring {
 	--item-padding-end: 0 !important;
 	max-height: 40vh !important;
 	overflow-x: auto;
-	padding: 0 8px !important;
+	padding: 0 6px !important;
 }
 
 .urlbarView-body-inner {
@@ -124,7 +132,7 @@ toolbarspring {
 	background: transparent !important;
 	box-shadow: none !important;
 	border: none !important;
-	padding: 0 0 !important;
+	padding: 0 !important;
 	min-height: 32px !important;
 	min-width: 32px !important;
 	margin: 0 !important;
@@ -141,7 +149,19 @@ toolbarspring {
 	margin-left: 6px !important;
 }
 
+#identity-box[pageproxystate="invalid"] > .identity-box-button,
+#urlbar:not(.searchButton) > #urlbar-input-container > #identity-box[pageproxystate="invalid"] > .identity-box-button {
+	padding-inline: 6px !important;
+}
+
 /* URL bar and Search bar */
+#urlbar[focused],
+#searchbar:focus-within {
+	outline: none !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
 #urlbar[focused] .urlbar-textbox-container {
 	margin: -1px !important;
 }
@@ -164,17 +184,15 @@ toolbarspring {
 	fill-opacity: 1 !important;
 }
 
-#identity-box {
-	margin: 3px 2px !important;
-	border-radius: 5px !important;
-}
-
 #notification-popup-box {
 	height: 26px !important;
 	border-radius: 5px !important;
 }
 
-.urlbar-page-action, #urlbar-go-button, .search-go-button,
+.urlbar-page-action,
+#urlbar-go-button,
+.urlbar-go-button,
+.search-go-button,
 #tracking-protection-icon-container {
 	width: 28px !important;
 	height: 26px !important;
@@ -183,10 +201,30 @@ toolbarspring {
 	border-radius: 5px !important;
 }
 
+#identity-box {
+	margin: 3px 2px !important;
+	border-radius: 5px !important;
+}
+
+#identity-box[pageproxystate="valid"].chromeUI {
+	margin-left: 0 !important;
+}
+
+#tracking-protection-icon-container:hover,
+.urlbar-page-action:hover,
+#urlbar-go-button:hover,
+.urlbar-go-button:hover,
+.search-go-button:hover,
 #identity-box:hover {
 	background: var(--gnome-headerbar-button-hover-background) !important;
 }
 
+#tracking-protection-icon-container:active,
+#tracking-protection-icon-container[open="true"],
+.urlbar-page-action:active,
+#urlbar-go-button:active,
+.urlbar-go-button:active,
+.search-go-button:active,
 #identity-box:active {
 	background: var(--gnome-headerbar-button-active-background) !important;
 }
@@ -218,4 +256,38 @@ toolbarspring {
 	border-radius: 3px !important;
 	opacity: 0.8 !important;
 	fill: var(--gnome-toolbar-color) !important;
+}
+
+/*translations-button*/
+#translations-button[translationsactive] > #translations-button-icon {
+  fill: var(--theme-primary-active-color) !important;
+  fill-opacity: 1;
+}
+
+#translations-button-circle-arrows {
+  height: 16px;
+  width: 16px;
+  list-style-image: url("chrome://browser/skin/sync.svg");
+  fill: var(--theme-primary-active-color) !important;
+  fill-opacity: 1;
+  margin-inline: 1px;
+}
+
+#translations-button-locale {
+  background-color: var(--theme-primary-active-color) !important;
+  color: white !important;
+  border-radius: 4px;
+  font-size: 0.8em;
+  height: 20px;
+  min-width: 20px;
+  text-align: center;
+  padding-top: 3px;
+  padding-inline: 1px;
+  box-sizing: border-box;
+  margin-inline: 2px -2px;
+  margin-block: -2px;
+}
+
+#translations-button[translationsactive="true"] {
+  width: auto !important;
 }
